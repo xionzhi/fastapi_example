@@ -16,6 +16,8 @@ from apps.routers.user.models import UserOrm, User, UserCreate
 
 async def get_user(*, db_session, user_id: int) -> t.Optional[User]:
     async with db_session() as session:
+        # print(type(session))  # <class 'sqlalchemy.ext.asyncio.session.AsyncSession'>
+        # from sqlalchemy.ext.asyncio.session import AsyncSession
         query = (select(UserOrm).filter(UserOrm.id == user_id))
         result = await session.scalars(query)
         user = result.first()
