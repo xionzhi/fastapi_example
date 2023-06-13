@@ -33,8 +33,8 @@ async def read_user(user_in: models.UserCreate, redis_store: RedisStore, db_sess
         raise ValidationError(
             [
                 ErrorWrapper(
-                    InvalidConfigurationError(msg="A user with this email already exists."),
-                    loc="email",
+                    InvalidConfigurationError(msg="A user with this phone already exists."),
+                    loc="phone",
                 )
             ],
             model=models.UserCreate,

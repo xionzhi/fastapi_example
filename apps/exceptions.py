@@ -9,11 +9,11 @@
 from pydantic.errors import PydanticValueError
 
 
-class DispatchException(Exception):
+class ExampleException(Exception):
     pass
 
 
-class DispatchPluginException(DispatchException):
+class DispatchPluginException(ExampleException):
     pass
 
 

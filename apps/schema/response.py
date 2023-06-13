@@ -13,49 +13,27 @@ from pydantic import BaseModel, Field
 from starlette import status
 
 
-class BizCode:
-    SUCCESS = 0
-    FAIL = 1
-    DATA_NOT_FOUND = 10404
-    UnknownOperate = 10400
-
-
 class BaseJsonResModel(BaseModel):
-    code: int = Field(title='状态码')
-    message: str = Field(title='状态值说明')
+    code: int = Field(title='Biz Code')
+    message: str = Field(title='Biz Code Message')
     data: t.Optional[t.Union[t.Dict, str, t.List, t.Any]] = {}
 
 
 class SuccessResponse(BaseJsonResModel):
-    code: int = Field(default=BizCode.SUCCESS, title='状态码')
-    message: str = Field(default='Success', title='状态值说明')
+    code: int = Field(default=status.HTTP_200_OK, title='Biz Code')
+    message: str = Field(default='Success', title='Biz Code Message')
 
 
-class FailureResponse(BaseJsonResModel):
-    code: int = Field(default=BizCode.FAIL, title='状态码')
-    message: str = Field(default='Failed', title='状态值说明')
-
-
-class ExternalInvokeErrorResponse(FailureResponse):
+class ExternalInvokeErrorResponse(BaseJsonResModel):
     code = status.HTTP_400_BAD_REQUEST
     message = 'External Invoke Error'
 
 
-class RequestValidErrorResponse(FailureResponse):
+class RequestValidErrorResponse(BaseJsonResModel):
     code = status.HTTP_422_UNPROCESSABLE_ENTITY
     message = 'Request Entity Error'
 
 
-class InternalErrorResponse(FailureResponse):
+class InternalErrorResponse(BaseJsonResModel):
     code = status.HTTP_500_INTERNAL_SERVER_ERROR
     message = 'Internal Server Error'
-
-
-class NotFoundErrorResponse(BaseJsonResModel):
-    code: int = Field(default=BizCode.DATA_NOT_FOUND, title='状态码')
-    message: str = Field(default='Data Not Found', title='状态值说明')
-
-
-class UnknownOperateErrorResponse(BaseJsonResModel):
-    code: int = Field(default=BizCode.UnknownOperate, title='状态码')
-    message: str = Field(default='Unknown Operate', title='状态值说明')
