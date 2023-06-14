@@ -35,7 +35,8 @@ def register_app_middleware(app: FastAPI):
 
     @app.on_event('shutdown')
     async def shutdown_event():
-        pass
+        await app.state.redis.close()
+        await app.state.client.close()
 
     @app.exception_handler(RequestValidationError)
     async def validation_exception_handler(

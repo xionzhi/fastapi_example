@@ -32,6 +32,7 @@ async def create_user(*, db_session, user_in: UserCreate) -> t.Optional[UserOrm]
     async with db_session() as session:
         async with session.begin():
             session.add(user)
+            # await session.flush()
             await session.commit()
     return user
 
@@ -45,4 +46,4 @@ async def get_user_by_phone(*, db_session, phone: str) -> t.Optional[User]:
 
 
 async def test_redis(*, redis_store, user_id: int) -> bool:
-    return await redis_store.set(f'hello{user_id}', 1)
+    return await redis_store.set(f'hello:{user_id}', 1)
