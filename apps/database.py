@@ -14,8 +14,17 @@ from apps import config
 from apps.util.connect import async_engine, sync_engine
 
 
+def resolve_table_name(name):
+    """Resolves table names to their mapped names."""
+    names = re.split("(?=[A-Z])", name)  # noqa
+    return "_".join([x.lower() for x in names if x])
+
+
 class Base(AsyncAttrs, DeclarativeBase):
-    pass
+
+    def dict(self):
+        """Returns a dict representation of a model."""
+        return {c.name: getattr(self, c.name) for c in self.__table__.columns}
 
 
 sync_mysql_engine = sync_engine(

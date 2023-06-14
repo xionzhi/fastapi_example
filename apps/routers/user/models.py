@@ -38,6 +38,17 @@ class UserCreate(UserBase):
     password: str
 
 
+class UserUpdate(UserBase):
+    user_name: t.Optional[str]
+    email: t.Optional[str]
+
+
+class UserFilter(UserBase):
+    id: int
+    user_name: t.Optional[str]
+    email: t.Optional[str]
+
+
 class User(UserBase):
     id: int
     user_name: t.Optional[str]
