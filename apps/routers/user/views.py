@@ -15,7 +15,7 @@ from pydantic.error_wrappers import ErrorWrapper, ValidationError
 from ..user import service, models
 from ...dependencies import DbSession, RedisStore
 from ...exceptions import InvalidConfigurationError
-from ...schema.response import SuccessResponse, InternalErrorResponse
+from ...schema.response import SuccessResponse, ExternalInvokeErrorResponse
 from ...util.log import logger
 
 router = APIRouter()
@@ -62,9 +62,9 @@ async def update_user(db_session: DbSession, user_id: int, user_in: models.UserU
 
 
 @router.delete("/{user_id}")
-async def update_user(db_session: DbSession, user_id: int):
+async def delete_user(db_session: DbSession, user_id: int):
     ok, msg = await service.delete_user(db_session=db_session, user_id=user_id)
-    model = SuccessResponse() if ok else InternalErrorResponse()
+    model = SuccessResponse() if ok else ExternalInvokeErrorResponse(message=msg)
 
     return ORJSONResponse(
         content=model.dict(),
