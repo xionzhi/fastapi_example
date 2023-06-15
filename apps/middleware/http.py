@@ -21,13 +21,6 @@ from apps.util.log import logger
 
 
 async def http_middleware(request: Request, call_next: t.Callable) -> Response:
-    """
-    http请求接收/返回中间件
-    捕获接口异常处理
-    :param request:
-    :param call_next:
-    :return:
-    """
     try:
         if asyncio.iscoroutinefunction(call_next):
             response = await call_next(request)
@@ -47,13 +40,6 @@ async def http_middleware(request: Request, call_next: t.Callable) -> Response:
 
 
 async def http_process_time(request: Request, call_next: t.Callable) -> Response:
-    """
-    http请求接收/返回中间件
-    添加response headers：接口处理时间
-    :param request:
-    :param call_next:
-    :return:
-    """
     start_time = time.perf_counter()
     if asyncio.iscoroutinefunction(call_next):
         response = await call_next(request)

@@ -6,6 +6,7 @@
 @Author  ：xionzhi
 @Date    ：2023/6/15 11:47 
 """
+from uuid import uuid4
 
 import pytest
 from httpx import AsyncClient
@@ -36,7 +37,12 @@ async def test_create_user(client: AsyncClient, user):
 
 @pytest.mark.anyio
 async def test_update_user(client: AsyncClient, user):
-    pass
+    data = {
+      "user_name": uuid4().hex,
+      "email": user.email
+    }
+    response = await client.put(f"/v1/api/user/{user.id}", json=data)
+    assert response.status_code == 200
 
 
 @pytest.mark.anyio

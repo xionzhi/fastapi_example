@@ -30,6 +30,11 @@ class UserOrm(Base, TimeStampMixin):
     password: Mapped[t.Optional[str]]
 
 
+class UserUpdate(BaseModel):
+    user_name: t.Optional[str]
+    email: t.Optional[str]
+
+
 class UserBase(BaseModel):
     phone: str
 
@@ -43,11 +48,6 @@ class UserFilter(BaseModel):
 
 class UserCreate(UserBase):
     password: str
-
-
-class UserUpdate(UserBase):
-    user_name: t.Optional[str]
-    email: t.Optional[str]
 
 
 class User(UserBase):

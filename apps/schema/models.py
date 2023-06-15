@@ -13,11 +13,7 @@ from sqlalchemy.orm import Mapped
 from sqlalchemy.orm import mapped_column
 
 
-class TimeStampMixin(object):
-    """Timestamping mixin
-    phone: Mapped[str] = mapped_column(unique=True, index=True)
-    """
-
+class TimeStampMixin:
     created_at: Mapped[datetime] = mapped_column(server_default=func.now())
     created_at._creation_order = 9998
     updated_at: Mapped[datetime] = mapped_column(server_default=func.now())

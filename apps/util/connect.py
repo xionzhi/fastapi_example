@@ -121,9 +121,6 @@ class RequestsSession(Session):
 
 
 class AsyncClientSession:
-    """
-    async aiohttp client
-    """
     __slots__ = (
         "session",
     )

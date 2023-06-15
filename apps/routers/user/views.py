@@ -53,11 +53,7 @@ async def create_user(redis_store: RedisStore, db_session: DbSession, user_in: m
 
 @router.put("/{user_id}", response_model=models.User)
 async def update_user(db_session: DbSession, user_id: int, user_in: models.UserUpdate):
-    user = await service.get_user(db_session=db_session, user_id=user_id)
-    if user is None:
-        raise HTTPException(status_code=404, detail="User not found")
-
-    user = await service.update_user(db_session=db_session, user=user, user_in=user_in)
+    user = await service.update_user(db_session=db_session, user_id=user_id, user_in=user_in)
     return user
 
 

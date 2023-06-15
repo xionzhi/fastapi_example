@@ -9,6 +9,7 @@
 
 from sqlalchemy.ext.asyncio import AsyncAttrs
 from sqlalchemy.orm import DeclarativeBase
+from sqlalchemy import Table
 
 from apps import config
 from apps.util.connect import async_engine, sync_engine
@@ -21,6 +22,11 @@ def resolve_table_name(name):
 
 
 class Base(AsyncAttrs, DeclarativeBase):
+
+    @classmethod
+    def __table_cls__(cls, name, metadata_obj, *arg, **kw):
+        return Table(name, metadata_obj, *arg, **kw)
+        # return Table(f"example_{name}", metadata_obj, *arg, **kw)
 
     def dict(self):
         """Returns a dict representation of a model."""
