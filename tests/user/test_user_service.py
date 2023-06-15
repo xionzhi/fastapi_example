@@ -8,8 +8,9 @@
 """
 
 import pytest
-from apps.routers.user import models
 from httpx import AsyncClient
+
+from apps.routers.user import models
 
 
 @pytest.mark.anyio

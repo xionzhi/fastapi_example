@@ -10,6 +10,8 @@
 import pytest
 from asgi_lifespan import LifespanManager
 from httpx import AsyncClient
+
+from apps.config import SERVE_HOST, SERVE_PORT
 from apps.main import get_app
 
 
@@ -26,7 +28,7 @@ async def app():
 @pytest.fixture(scope="session")
 async def client(app):
     async with LifespanManager(app):
-        async with AsyncClient(app=app, base_url="http://127.0.0.1:8000") as client:
+        async with AsyncClient(app=app, base_url=f"http://{SERVE_HOST}:{SERVE_PORT}") as client:
             yield client
 
 
