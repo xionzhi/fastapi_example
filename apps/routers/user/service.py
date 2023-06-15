@@ -11,7 +11,7 @@ import typing as t
 
 from sqlalchemy import select, update
 
-from apps.routers.user.models import UserOrm, UserCreate, UserUpdate, UserFilter
+from apps.routers.user.models import UserOrm, UserCreate, UserUpdate
 from apps.util.log import logger
 
 
@@ -44,9 +44,9 @@ async def update_user(*, db_session, user: UserOrm, user_in: UserUpdate) -> t.Op
 
     async with db_session() as session:
         async with session.begin():
-            query = (update(UserOrm).
-                     filter(UserOrm.id == user.id).
-                     values(**user_in.dict()))
+            query = (update(UserOrm)
+                     .filter(UserOrm.id == user.id)
+                     .values(**user_in.dict()))
             await session.execute(query)
             await session.commit()
     return user
@@ -70,13 +70,21 @@ async def get_user_by_phone(*, db_session, phone: str) -> t.Optional[UserOrm]:
     return user
 
 
-async def get_all_user(*, db_session, keyword: str) -> t.List[t.Optional[UserOrm]]:
+async def get_all_user(*, db_session,
+                       keyword: str, phone: str, page: int, size: int, **kwargs) -> t.List[t.Optional[UserOrm]]:
     async with db_session() as session:
         query = select(UserOrm)
+
+        if phone:
+            query = query.filter(UserOrm.phone == phone)
 
         if keyword:
             query = query.filter(UserOrm.user_name.like(f'%{keyword}%'))
 
+        if page and size:
+            query = query.limit(size).offset((page - 1)*size)
+
+        logger.info(f'{query.params()}')
         result = await session.scalars(query)
         users = result.all()
     return users

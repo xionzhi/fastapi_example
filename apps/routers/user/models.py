@@ -34,17 +34,18 @@ class UserBase(BaseModel):
     phone: str
 
 
+class UserFilter(BaseModel):
+    phone: t.Optional[str] = None
+    keyword: t.Optional[str] = None
+    page: t.Optional[int] = 1
+    size: t.Optional[int] = 10
+
+
 class UserCreate(UserBase):
     password: str
 
 
 class UserUpdate(UserBase):
-    user_name: t.Optional[str]
-    email: t.Optional[str]
-
-
-class UserFilter(UserBase):
-    id: int
     user_name: t.Optional[str]
     email: t.Optional[str]
 

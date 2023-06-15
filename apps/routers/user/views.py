@@ -73,7 +73,12 @@ async def delete_user(db_session: DbSession, user_id: int):
 
 
 @router.get("", response_model=t.List[models.User])
-async def list_user(db_session: DbSession, keyword: t.Union[str, None] = None):
-    users = await service.get_all_user(db_session=db_session, keyword=keyword)
+async def list_user(db_session: DbSession,
+                    phone: t.Optional[str] = None,
+                    keyword: t.Optional[str] = None,
+                    page: t.Optional[int] = 1,
+                    size: t.Optional[int] = 10):
+    user_filter = models.UserFilter(phone=phone, keyword=keyword, page=page, size=size)
+    users = await service.get_all_user(db_session=db_session, **user_filter.dict())
 
     return users
