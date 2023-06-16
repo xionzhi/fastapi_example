@@ -9,6 +9,7 @@
 
 import typing as t
 
+import bcrypt
 from pydantic import BaseModel
 from sqlalchemy.orm import Mapped
 from sqlalchemy.orm import mapped_column
@@ -28,6 +29,14 @@ class UserOrm(Base, TimeStampMixin):
     email: Mapped[t.Optional[str]]
     user_name: Mapped[t.Optional[str]]
     password: Mapped[t.Optional[str]]
+
+    def check_password(self, password):
+        return bcrypt.checkpw(password.encode("utf-8"), self.password)
+
+    @staticmethod
+    def hash_password(password: str):
+        """Generates a hashed version of the provided password."""
+        return bcrypt.hashpw(bytes(password, "utf-8"), bcrypt.gensalt())
 
 
 class UserUpdate(BaseModel):

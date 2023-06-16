@@ -45,8 +45,13 @@ async def create_user(redis_store: RedisStore, db_session: DbSession, user_in: m
 
     user = await service.create_user(db_session=db_session, user_in=user_in)
 
+    # test check passwd
+    check = user.check_password(user_in.password)
+    logger.info(f'check_password: {check}')
+
+    # test redis
     redis_status = await service.test_redis(redis_store=redis_store, user_id=user.id)
-    logger.info(redis_status)
+    logger.info(f'test_redis: {redis_status}')
 
     return user
 

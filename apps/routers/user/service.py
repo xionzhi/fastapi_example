@@ -24,12 +24,12 @@ async def get_user(*, db_session, user_id: int) -> t.Optional[UserOrm]:
 
 
 async def create_user(*, db_session, user_in: UserCreate) -> t.Optional[UserOrm]:
-    user = UserOrm(
-        **user_in.dict(exclude={"password"}), password=user_in.password
-    )
-
     async with db_session() as session:
         async with session.begin():
+            user = UserOrm(
+                **user_in.dict(exclude={"password"})
+            )
+            user.password = user.hash_password(user_in.password)
             session.add(user)
             await session.commit()
     return user

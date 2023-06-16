@@ -35,5 +35,5 @@ async def client(app):
 @pytest.fixture
 def user():
     from apps.routers.user.models import User
-    user = User(id=1, phone='13088880000')
+    user = User(id=1, phone='13088880000', email='user@example.com')
     yield user
