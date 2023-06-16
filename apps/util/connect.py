@@ -7,9 +7,12 @@
 @Date    ：2023/6/13 9:48 
 """
 
+from urllib.parse import quote_plus
+
 import aioredis as aioredis
 import redis as redis
 from aiohttp import ClientSession, ClientTimeout, TCPConnector
+from motor.motor_asyncio import AsyncIOMotorClient
 from requests import adapters, Session
 from sqlalchemy import create_engine, Engine, make_url
 from sqlalchemy.ext.asyncio import AsyncEngine, create_async_engine
@@ -26,6 +29,60 @@ def async_engine(url, **kwargs) -> AsyncEngine:
     url = make_url(url)
     engine = create_async_engine(url, **kwargs)
     return engine
+
+
+class AsyncMongodb:
+    __slots__ = (
+        "config",
+        "peer_conn",
+        "client"
+    )
+    __conn = {}
+
+    def __init__(self, config: dict):
+        self.config = dict(config)
+        self.init_db()
+
+    def init_db(self):
+        config_client = {}
+        self.peer_conn = "_".join([
+            self.config["HOST"], str(self.config["PORT"])])
+        if self.config["USER"]:
+            self.peer_conn = "_".join([self.peer_conn, self.config["USER"]])
+        if not self.__conn.get(self.peer_conn):
+            url = self._connect_url()
+            self.client = AsyncIOMotorClient(
+                url, maxPoolSize=100, maxIdleTimeMS=300000,
+                waitQueueMultiple=10, serverSelectionTimeoutMS=5000)
+            config_client.setdefault("config", self.config)
+            config_client.setdefault("client", self.client)
+            self.__conn.setdefault(self.peer_conn, config_client)
+        else:
+            self.client = self.__conn[self.peer_conn]["client"]
+            self.config = self.__conn[self.peer_conn]["config"]
+
+    def _connect_url(self):
+        url = "mongodb://"
+        domain = "{host}:{port}/".format(
+            host=self.config["HOST"], port=self.config["PORT"]
+        )
+
+        if self.config["USER"] and self.config["PASSWORD"] and self.config["AUTH_DB"]:
+            authentication = "{username}:{password}@".format(
+                username=quote_plus(self.config["USER"]),
+                password=quote_plus(self.config["PASSWORD"])
+            )
+            domain = "{host}:{port}/".format(
+                host=self.config["HOST"],
+                port=self.config["PORT"]
+            )
+            param = "?authSource={auth_db}".format(
+                auth_db=self.config["AUTH_DB"]
+            )
+            url = "".join([url, authentication, domain, param])
+        else:
+            url = "".join([url, domain])
+        return url
 
 
 class SyncRedis:

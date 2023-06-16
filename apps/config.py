@@ -63,3 +63,12 @@ SYNC_SQLALCHEMY_DATABASE_URI = f"mysql+pymysql://" \
 REDIS_STORE_HOST = config("REDIS_STORE_HOST", default="127.0.0.1")
 REDIS_STORE_PORT = config("REDIS_STORE_PORT", default="6379")
 REDIS_STORE_URI = f"redis://{REDIS_STORE_HOST}:{REDIS_STORE_PORT}"
+
+
+MONGO_CONFIG = {
+    'HOST': config("MONGO_HOST", default="127.0.0.1"),
+    'PORT': config("MONGO_PORT", default="27017"),
+    'USER': config("MONGO_USER", default=None),
+    'PASSWORD': config("MONGO_PASSWORD", default=None),
+    'AUTH_DB': config("MONGO_AUTH_DB", default=None),
+}

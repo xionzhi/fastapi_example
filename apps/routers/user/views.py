@@ -13,12 +13,27 @@ from fastapi.responses import ORJSONResponse
 from pydantic.error_wrappers import ErrorWrapper, ValidationError
 
 from ..user import service, models
-from ...dependencies import DbSession, RedisStore
+from ...dependencies import DbSession, RedisStore, DbMongo
 from ...exceptions import InvalidConfigurationError
 from ...schema.response import SuccessResponse, ExternalInvokeErrorResponse
 from ...util.log import logger
 
 router = APIRouter()
+
+
+@router.get("/test_mongo", response_model=t.Dict)
+async def test_mongo(db_mongo: DbMongo):
+    doc = await db_mongo.test['crawlSeedV3'].find_one({}, {'_id': 0})
+    return doc
+
+
+@router.get("/test_mongo_list", response_model=t.List[t.Dict])
+async def test_mongo(db_mongo: DbMongo):
+    docs = [doc async for doc in
+            db_mongo.webpage['amazon_tmp_webpage110']
+            .find({'htmlIntegrity': 'OK'},
+                  {'_id': 0, 'metadata': 0, 'signature': 0, 'content': 0, 'prevSignature': 0}).limit(10)]
+    return docs
 
 
 @router.get("/{user_id}", response_model=models.User)

@@ -17,7 +17,7 @@ from starlette.routing import Route
 from apps import config
 from apps.database import async_msql_engine
 from apps.schema.response import RequestValidErrorResponse
-from apps.util.connect import AsyncClientSession, AsyncRedis
+from apps.util.connect import AsyncClientSession, AsyncRedis, AsyncMongodb
 from apps.util.log import logger
 
 
@@ -28,6 +28,7 @@ def register_app_middleware(app: FastAPI):
         app.state.redis = AsyncRedis(url=config.REDIS_STORE_URI, decode_responses=True).client
         app.state.client = await AsyncClientSession().init_session()
         app.state.mysql = async_sessionmaker(async_msql_engine, class_=AsyncSession, expire_on_commit=False)
+        app.state.mongo = AsyncMongodb(config.MONGO_CONFIG).client
 
         route: Route
         for route in app.routes:

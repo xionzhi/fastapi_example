@@ -10,6 +10,7 @@
 import typing as t
 
 from fastapi import Depends
+from motor.motor_asyncio import AsyncIOMotorClient
 from sqlalchemy.ext.asyncio import AsyncSession
 from starlette.requests import Request
 
@@ -24,6 +25,12 @@ def get_redis(request: Request):
     return request.app.state.redis
 
 
+def get_mongo(request: Request):
+    return request.app.state.mongo
+
+
 DbSession = t.Annotated[AsyncSession, Depends(get_db)]
 
 RedisStore = t.Annotated[AsyncRedis, Depends(get_redis)]
+
+DbMongo = t.Annotated[AsyncIOMotorClient, Depends(get_mongo)]
