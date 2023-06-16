@@ -31,6 +31,11 @@ async def test_get_user(client: AsyncClient, user):
 
 
 @pytest.mark.anyio
+async def test_delete_user(client: AsyncClient, user):
+    pass
+
+
+@pytest.mark.anyio
 async def test_create_user(client: AsyncClient, user):
     pass
 
@@ -43,11 +48,6 @@ async def test_update_user(client: AsyncClient, user):
     }
     response = await client.put(f"/v1/api/user/{user.id}", json=data)
     assert response.status_code == 200
-
-
-@pytest.mark.anyio
-async def test_delete_user(client: AsyncClient, user):
-    pass
 
 
 @pytest.mark.anyio

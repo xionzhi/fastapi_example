@@ -17,15 +17,16 @@ from starlette.requests import Request
 from apps.util.connect import AsyncRedis
 
 
-def get_db(request: Request):
-    return request.app.state.mysql
+async def get_db(request: Request) -> AsyncSession:
+    async with request.app.state.mysql() as db:
+        yield db
 
 
-def get_redis(request: Request):
+async def get_redis(request: Request):
     return request.app.state.redis
 
 
-def get_mongo(request: Request):
+async def get_mongo(request: Request):
     return request.app.state.mongo
 
 
